@@ -10,9 +10,10 @@ require 'osx/cocoa'
 require 'rubygems'
 require 'open-uri'
 require 'hpricot'
+require 'googlepagerank'
 
 class AppController < OSX::NSObject
-  attr_accessor :iteration, :counter
+  attr_accessor :iteration, :counter, :pr
 
   attr_accessor :domainField, 
                 :xpathField, 
@@ -21,7 +22,9 @@ class AppController < OSX::NSObject
                 :counterLabel, 
                 :urlLabel, 
                 :progressBar,
-                :stopButton
+                :stopButton,
+                :prLabel
+                
                 
   ib_outlet     :domainField, 
                 :xpathField, 
@@ -30,13 +33,14 @@ class AppController < OSX::NSObject
                 :counterLabel,
                 :urlLabel, 
                 :progressBar,
-                :stopButton
+                :stopButton,
+                :prLabel
   
   
   def awakeFromNib
     @counter = 0
     @iteration = 0
-    domainField.setStringValue "beenverified.com"
+    domainField.setStringValue "http://www.beenverified.com"
     xpathField.setStringValue "//body/div[@id='res']/div[1]/ol/li/h3/a"
     searchField.setStringValue "Background Checks"
     counterLabel.setStringValue ""
@@ -90,6 +94,9 @@ class AppController < OSX::NSObject
       end
       @iteration = @iteration + 1
     end
+    
+    @pr = GooglePageRank.get(domainField.stringValue)
+    prLabel.setStringValue "The page rank for that URL is: #{@pr}"
     
     if counter == 0
       counterLabel.setStringValue "Jeez, you don't have any ranking (Better get going on SEO)"
