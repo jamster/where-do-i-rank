@@ -85,7 +85,7 @@ class AppController < OSX::NSObject
       links.each_with_index do |link, index|
         puts link["href"]
         if link['href'] =~ /#{domainField.stringValue}/
-          counter = index + (10 * @iteration)
+          counter = index + 1 + (10 * @iteration)
           counterLabel.setStringValue "Your Position is: #{counter}"
           urlLabel.setStringValue "URL: #{link['href']}"
           progressBar.setDoubleValue(100.0)
